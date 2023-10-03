@@ -1,19 +1,39 @@
 package handlers
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"api/config"
+	"api/currencies"
+	"api/database"
+	"api/ticker"
+	"encoding/json"
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 type Handler struct {
 	app *fiber.App
+	db  *database.Storage
+	tk  *ticker.Tick
+	ex  *currencies.Currency
 }
 
-func NewHandler() *Handler {
+func NewHandler(confDb config.ConfDB, confApi config.ConfAPI) (*Handler, error) {
+	d, err := database.NewStorage(confDb)
+	if err != nil {
+		return nil, err
+	}
 	h := &Handler{
 		app: fiber.New(),
+		db:  d,
+		tk:  ticker.NewTick(),
+		ex:  currencies.NewCurrency(confApi),
 	}
 	h.app.Get("/api/currency", h.GetRows)
 	h.app.Post("/api/currency", h.CreateRowWell)
 	h.app.Put("/api/currency", h.CreateRow)
-	return h
+	h.tk.Loop()
+	return h, nil
 }
 
 func (h *Handler) Listen(host string) error {
@@ -29,5 +49,15 @@ func (h *Handler) CreateRowWell(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) GetRows(ctx *fiber.Ctx) error {
-	return ctx.SendString("Start endpoint")
+	q, err := h.db.SelectAll()
+	if err != nil {
+		fmt.Println(err)
+		return ctx.SendString("error")
+	}
+	r, err := json.Marshal(q)
+	if err != nil {
+		fmt.Println(err)
+		return ctx.SendString("error")
+	}
+	return ctx.SendString(string(r))
 }

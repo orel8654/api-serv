@@ -1,7 +1,17 @@
 package currencies
 
-import "context"
+import "api/config"
 
-func CurrencyGet(ctx context.Context) {
-	
+type Currency struct {
+	jwt config.ConfAPI
+}
+
+func NewCurrency(conf config.ConfAPI) *Currency {
+	return &Currency{
+		jwt: conf,
+	}
+}
+
+func (c *Currency) GetNewCurrency() {
+
 }

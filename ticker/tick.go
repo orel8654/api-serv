@@ -1,22 +1,27 @@
 package ticker
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-func Ticker() {
-	ticker := time.NewTicker(5 * time.Second)
-	done := make(chan bool)
+type Tick struct {
+	t *time.Ticker
+}
+
+func NewTick() *Tick {
+	return &Tick{
+		t: time.NewTicker(1 * time.Minute),
+	}
+}
+
+func (t *Tick) Loop() {
 	go func() {
 		for {
 			select {
-			case <-done:
-				return
-			case <-ticker.C:
-				//HandlerUpdateCurrency(configDB, configAPI)
+			case <-t.t.C:
+				fmt.Println("Tick")
 			}
 		}
-	}()
-	defer func() {
-		ticker.Stop()
-		done <- true
 	}()
 }

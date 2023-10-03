@@ -1,9 +1,5 @@
 package config
 
-import (
-	"time"
-)
-
 type ConfDB struct {
 	Database string `yaml:"dbname"`
 	Username string `yaml:"dbuser"`
@@ -17,8 +13,14 @@ type ConfAPI struct {
 }
 
 type DatabaseFields struct {
-	CurrencyFrom string `pg:"currency_from"`
-	CurrencyTo string `pg:"currency_to"`
-	Well float64 `pg:"well"`
-	UpdatedAt time.Time `pg:"updated_at"`
+	CurrencyFrom string  `pg:"currency_from"`
+	CurrencyTo   string  `pg:"currency_to"`
+	Well         float64 `pg:"well"`
+	UpdatedAt    string  `pg:"updated_at"`
+}
+
+type ResponseFields struct {
+	CurrencyFrom string  `pg:"currency_from"`
+	CurrencyTo   string  `pg:"currency_to"`
+	Well         float64 `pg:"well"`
 }

@@ -22,14 +22,25 @@ type CurrencyLatest struct {
 }
 
 type DatabaseFields struct {
-	CurrencyFrom string  `pg:"currency_from"`
-	CurrencyTo   string  `pg:"currency_to"`
-	Well         float64 `pg:"well"`
-	UpdatedAt    string  `pg:"updated_at"`
+	CurrencyFrom string  `db:"currency_from"`
+	CurrencyTo   string  `db:"currency_to"`
+	Well         float64 `db:"well"`
+	UpdatedAt    string  `db:"updated_at"`
 }
 
 type ResponseFields struct {
-	CurrencyFrom string  `pg:"currency_from"`
-	CurrencyTo   string  `pg:"currency_to"`
-	Well         float64 `pg:"well"`
+	CurrencyFrom string  `db:"currency_from"`
+	CurrencyTo   string  `db:"currency_to"`
+	Well         float64 `db:"well"`
+}
+
+type DataPost struct {
+	CurrencyFrom string `json:"currency_from"`
+	CurrencyTo   string `json:"currency_to"`
+}
+
+type DataPut struct {
+	CurrencyFrom string  `json:"currency_from"`
+	CurrencyTo   string  `json:"currency_to"`
+	Well         float64 `json:"well"`
 }

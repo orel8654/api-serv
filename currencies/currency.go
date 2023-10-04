@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const UrlsEx = "openexchangerates.org/api/latest.json?base=USD&app_id="
+const UrlsEx = "https://openexchangerates.org/api/latest.json?base=USD&app_id="
 
 type Currency struct {
 	jwt config.ConfAPI

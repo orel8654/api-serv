@@ -5,7 +5,6 @@ import (
 	"api/currencies"
 	"api/database"
 	"api/ticker"
-	"encoding/json"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,8 +29,9 @@ func NewHandler(confDb config.ConfDB, confApi config.ConfAPI) (*Handler, error) 
 		ex:  currencies.NewCurrency(confApi),
 	}
 	h.app.Get("/api/currency", h.GetRows)
-	h.app.Post("/api/currency", h.CreateRowWell)
-	h.app.Put("/api/currency", h.CreateRow)
+	h.app.Post("/api/currency", h.CreateRow)
+	h.app.Put("/api/currency", h.UpdateRowWell)
+	h.app.Get("/api/tick/update", h.UpdateTick)
 	h.tk.Loop()
 	return h, nil
 }
@@ -40,12 +40,40 @@ func (h *Handler) Listen(host string) error {
 	return h.app.Listen(host)
 }
 
-func (h *Handler) CreateRow(ctx *fiber.Ctx) error {
-	return ctx.SendString("Start endpoint")
+func (h *Handler) UpdateRowWell(ctx *fiber.Ctx) error {
+	var payload config.DataPut
+	if err := ctx.BodyParser(&payload); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if err := h.db.Exists(config.DataPost{
+		CurrencyTo: payload.CurrencyTo,
+	}); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if err := h.db.UpdateWell(payload); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return ctx.JSON(payload)
 }
 
-func (h *Handler) CreateRowWell(ctx *fiber.Ctx) error {
-	return ctx.SendString("Start endpoint")
+func (h *Handler) CreateRow(ctx *fiber.Ctx) error {
+	var payload config.DataPost
+	if err := ctx.BodyParser(&payload); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if err := h.db.Exists(payload); err == nil {
+		fmt.Println(err)
+		return fmt.Errorf("row exist")
+	}
+	if err := h.db.WriteRow(payload); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return ctx.JSON(payload)
 }
 
 func (h *Handler) GetRows(ctx *fiber.Ctx) error {
@@ -54,12 +82,7 @@ func (h *Handler) GetRows(ctx *fiber.Ctx) error {
 		fmt.Println(err)
 		return ctx.SendString("error")
 	}
-	r, err := json.Marshal(q)
-	if err != nil {
-		fmt.Println(err)
-		return ctx.SendString("error")
-	}
-	return ctx.SendString(string(r))
+	return ctx.JSON(q)
 }
 
 func (h *Handler) UpdateTick(ctx *fiber.Ctx) error {
@@ -69,7 +92,10 @@ func (h *Handler) UpdateTick(ctx *fiber.Ctx) error {
 		ctx.Status(500)
 		return ctx.SendString("fail")
 	}
-	// update DB
-	_ = data
+	if err = h.db.UpdateRows(data); err != nil {
+		fmt.Println(err)
+		ctx.Status(500)
+		return ctx.SendString("fail")
+	}
 	return ctx.SendString("updated")
 }

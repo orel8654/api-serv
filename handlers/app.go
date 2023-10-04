@@ -61,3 +61,15 @@ func (h *Handler) GetRows(ctx *fiber.Ctx) error {
 	}
 	return ctx.SendString(string(r))
 }
+
+func (h *Handler) UpdateTick(ctx *fiber.Ctx) error {
+	data, err := h.ex.GetNewCurrency()
+	if err != nil {
+		fmt.Println(err)
+		ctx.Status(500)
+		return ctx.SendString("fail")
+	}
+	// update DB
+	_ = data
+	return ctx.SendString("updated")
+}

@@ -12,6 +12,15 @@ type ConfAPI struct {
 	Token string `yaml:"token"`
 }
 
+type CurrencyVal struct {
+	RUB float64 `json:"RUB"`
+	EUR float64 `json:"EUR"`
+}
+
+type CurrencyLatest struct {
+	Data CurrencyVal `json:"rates"`
+}
+
 type DatabaseFields struct {
 	CurrencyFrom string  `pg:"currency_from"`
 	CurrencyTo   string  `pg:"currency_to"`

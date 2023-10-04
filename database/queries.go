@@ -55,9 +55,9 @@ func (s *Storage) Exists(data config.DatabaseFields) (bool, error) {
 	return true, nil
 }
 
-func (s *Storage) SelectAll() (config.DatabaseFields, error) {
-	query := `SELECT (currency_from, currency_to, well) FROM newtable`
-	res := config.DatabaseFields{}
+func (s *Storage) SelectAll() (*[]config.DatabaseFields, error) {
+	query := `SELECT currency_from, currency_to, well, updated_at FROM newtable`
+	res := new([]config.DatabaseFields)
 	if err := s.s.Select(&res, query); err != nil {
 		return res, err
 	}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/fatih/structs"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -52,6 +53,18 @@ func (s *Storage) UpdateWell(newData config.DataPut) error {
 }
 
 func (s *Storage) UpdateRows(newData config.CurrencyLatest) error {
+	m := structs.Map(newData.Data)
+	query := `UPDATE newtable
+			set well =$1,
+			updated_at =$2
+			where currency_to =$3`
+
+	for key := range m {
+		_, err := s.s.Exec(query, m[key], time.Now().Format("2006-01-02 15:04:05"), key)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

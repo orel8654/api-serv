@@ -35,7 +35,6 @@ func (t *Tick) Loop() {
 				if err := newReq(); err != nil {
 					fmt.Println(err)
 				}
-				fmt.Println("Tick success")
 			}
 		}
 	}()

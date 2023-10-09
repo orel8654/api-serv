@@ -2,7 +2,6 @@ package ticker
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 )
 
@@ -12,27 +11,19 @@ type Tick struct {
 	t *time.Ticker
 }
 
-func NewTick() *Tick {
+func NewTick(tk time.Duration) *Tick {
 	return &Tick{
-		t: time.NewTicker(1 * time.Minute),
+		t: time.NewTicker(tk),
 	}
 }
 
-func newReq() error {
-	_, err := http.Get(UrlsSelf)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (t *Tick) Loop() {
+func (t *Tick) LoopAccept(fn func() error) {
 	go func() {
 		for {
 			select {
 			case <-t.t.C:
 				fmt.Println("Tick")
-				if err := newReq(); err != nil {
+				if err := fn(); err != nil {
 					fmt.Println(err)
 				}
 			}

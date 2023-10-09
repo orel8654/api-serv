@@ -6,9 +6,13 @@ import (
 	"api/database"
 	"api/ticker"
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+const UrlsSelf = "http://127.0.0.1:3000/api/tick/update"
 
 type Handler struct {
 	app *fiber.App
@@ -22,17 +26,24 @@ func NewHandler(confDb config.ConfDB, confApi config.ConfAPI) (*Handler, error) 
 	if err != nil {
 		return nil, err
 	}
+	fn := func() error {
+		_, err := http.Get(UrlsSelf)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
 	h := &Handler{
 		app: fiber.New(),
 		db:  d,
-		tk:  ticker.NewTick(),
+		tk:  ticker.NewTick(1 * time.Minute),
 		ex:  currencies.NewCurrency(confApi),
 	}
 	h.app.Get("/api/currency", h.GetRows)
 	h.app.Post("/api/currency", h.CreateRow)
 	h.app.Put("/api/currency", h.UpdateRowWell)
 	h.app.Get("/api/tick/update", h.UpdateTick)
-	h.tk.Loop()
+	h.tk.LoopAccept(fn)
 	return h, nil
 }
 

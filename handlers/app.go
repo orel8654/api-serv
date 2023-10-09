@@ -46,10 +46,12 @@ func (h *Handler) UpdateRowWell(ctx *fiber.Ctx) error {
 		fmt.Println(err)
 		return err
 	}
-	if err := h.db.Exists(config.DataPost{
+	err = h.db.Exists(
+	    config.DataPost{
 		CurrencyTo: payload.CurrencyTo,
-	}); err != nil {
-		fmt.Println(err)
+	    },
+	)
+        if err != nil {
 		return err
 	}
 	if err := h.db.UpdateWell(payload); err != nil {

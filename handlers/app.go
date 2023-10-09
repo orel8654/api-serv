@@ -54,7 +54,6 @@ func (h *Handler) Listen(host string) error {
 func (h *Handler) UpdateRowWell(ctx *fiber.Ctx) error {
 	var payload config.DataPut
 	if err := ctx.BodyParser(&payload); err != nil {
-		fmt.Println(err)
 		return err
 	}
 	err := h.db.Exists(
@@ -66,7 +65,6 @@ func (h *Handler) UpdateRowWell(ctx *fiber.Ctx) error {
 		return err
 	}
 	if err := h.db.UpdateWell(payload); err != nil {
-		fmt.Println(err)
 		return err
 	}
 	return ctx.JSON(payload)

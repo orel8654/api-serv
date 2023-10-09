@@ -1,7 +1,7 @@
 package database
 
 import (
-	"api/config"
+	"api/types"
 	"fmt"
 	"time"
 
@@ -14,7 +14,7 @@ type Storage struct {
 	s *sqlx.DB
 }
 
-func NewStorage(conf config.ConfDB) (*Storage, error) {
+func NewStorage(conf types.ConfDB) (*Storage, error) {
 	s := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable", conf.Username, conf.Password, conf.Database, conf.Host, conf.Port)
 	db, err := sqlx.Connect("postgres", s)
 	if err != nil {
@@ -25,8 +25,8 @@ func NewStorage(conf config.ConfDB) (*Storage, error) {
 	}, nil
 }
 
-func (s *Storage) WriteRow(data config.DataPost) error {
-	dataWrite := config.DatabaseFields{
+func (s *Storage) WriteRow(data types.DataPost) error {
+	dataWrite := types.DatabaseFields{
 		CurrencyFrom: data.CurrencyFrom,
 		CurrencyTo:   data.CurrencyTo,
 		Well:         0,
@@ -41,7 +41,7 @@ func (s *Storage) WriteRow(data config.DataPost) error {
 	return nil
 }
 
-func (s *Storage) UpdateWell(newData config.DataPut) error {
+func (s *Storage) UpdateWell(newData types.DataPut) error {
 	query := `UPDATE newtable
 			set well =$1
 			where currency_to =$2`
@@ -52,7 +52,7 @@ func (s *Storage) UpdateWell(newData config.DataPut) error {
 	return nil
 }
 
-func (s *Storage) UpdateRows(newData config.CurrencyLatest) error {
+func (s *Storage) UpdateRows(newData types.CurrencyLatest) error {
 	m := structs.Map(newData.Data)
 	query := `UPDATE newtable
 			set well =$1,
@@ -68,31 +68,31 @@ func (s *Storage) UpdateRows(newData config.CurrencyLatest) error {
 	return nil
 }
 
-func (s *Storage) SelectRow(data config.DatabaseFields) (config.DatabaseFields, error) {
+func (s *Storage) SelectRow(data types.DatabaseFields) (types.DatabaseFields, error) {
 	query := `SELECT currency_from, currency_to, well, updated_at
 			FROM newtable
 			WHERE currency_from =$currency_from AND currency_to =$currency_to`
-	res := config.DatabaseFields{}
+	res := types.DatabaseFields{}
 	if err := s.s.Get(&res, query, data.CurrencyFrom, data.CurrencyTo); err != nil {
 		return res, err
 	}
 	return res, nil
 }
 
-func (s *Storage) Exists(data config.DataPost) error {
+func (s *Storage) Exists(data types.DataPost) error {
 	query := `SELECT currency_from, currency_to, well, updated_at
 			FROM newtable
 			WHERE currency_to =$1`
-	var res config.DatabaseFields
+	var res types.DatabaseFields
 	if err := s.s.Get(&res, query, data.CurrencyTo); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Storage) SelectAll() ([]config.DatabaseFields, error) {
+func (s *Storage) SelectAll() ([]types.DatabaseFields, error) {
 	query := `SELECT currency_from, currency_to, well, updated_at FROM newtable`
-	var res []config.DatabaseFields
+	var res []types.DatabaseFields
 	if err := s.s.Select(&res, query); err != nil {
 		return res, err
 	}

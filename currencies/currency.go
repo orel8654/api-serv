@@ -1,7 +1,7 @@
 package currencies
 
 import (
-	"api/config"
+	"api/types"
 	"encoding/json"
 	"net/http"
 )
@@ -9,17 +9,17 @@ import (
 const UrlsEx = "https://openexchangerates.org/api/latest.json?base=USD&app_id="
 
 type Currency struct {
-	jwt config.ConfAPI
+	jwt types.ConfAPI
 }
 
-func NewCurrency(conf config.ConfAPI) *Currency {
+func NewCurrency(conf types.ConfAPI) *Currency {
 	return &Currency{
 		jwt: conf,
 	}
 }
 
-func (c *Currency) GetNewCurrency() (config.CurrencyLatest, error) {
-	var resultData config.CurrencyLatest
+func (c *Currency) GetNewCurrency() (types.CurrencyLatest, error) {
+	var resultData types.CurrencyLatest
 	response, err := http.Get(UrlsEx + c.jwt.Token)
 	if err != nil {
 		return resultData, err

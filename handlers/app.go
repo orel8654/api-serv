@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"api/config"
 	"api/currencies"
 	"api/database"
 	"api/ticker"
+	"api/types"
 	"fmt"
 	"net/http"
 	"time"
@@ -21,7 +21,7 @@ type Handler struct {
 	ex  *currencies.Currency
 }
 
-func NewHandler(confDb config.ConfDB, confApi config.ConfAPI) (*Handler, error) {
+func NewHandler(confDb types.ConfDB, confApi types.ConfAPI) (*Handler, error) {
 	d, err := database.NewStorage(confDb)
 	if err != nil {
 		return nil, err
@@ -52,12 +52,12 @@ func (h *Handler) Listen(host string) error {
 }
 
 func (h *Handler) UpdateRowWell(ctx *fiber.Ctx) error {
-	var payload config.DataPut
+	var payload types.DataPut
 	if err := ctx.BodyParser(&payload); err != nil {
 		return err
 	}
 	err := h.db.Exists(
-		config.DataPost{
+		types.DataPost{
 			CurrencyTo: payload.CurrencyTo,
 		},
 	)
@@ -71,7 +71,7 @@ func (h *Handler) UpdateRowWell(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) CreateRow(ctx *fiber.Ctx) error {
-	var payload config.DataPost
+	var payload types.DataPost
 	if err := ctx.BodyParser(&payload); err != nil {
 		fmt.Println(err)
 		return err

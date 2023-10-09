@@ -1,4 +1,4 @@
-package config
+package types
 
 type ConfDB struct {
 	Database string `yaml:"dbname"`

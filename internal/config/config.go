@@ -6,14 +6,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ОПИШЕМ КОНИФИГ
-
-// создадим конструктор к тому как инициализировать этот конфиг
-
 type Config struct {
-	DB    string
-	Redis string
-	// ...
+	Database string `yaml:"dbname"`
+	Username string `yaml:"dbuser"`
+	Password string `yaml:"dbpass"`
+	Host     string `yaml:"dbhost"`
+	Port     string `yaml:"dbport"`
 }
 
 func NewConfig(path string) (*Config, error) {

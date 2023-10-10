@@ -4,12 +4,14 @@ import (
 	"api/internal/currency/handlers"
 	"api/internal/currency/repo"
 	"api/internal/currency/service"
+	"os"
 )
 
-//TODO: ЗАПУСК нашего приложения
-
+// TODO: ЗАПУСК нашего приложения
 func main() {
-
+	if err := run(); err != nil {
+		os.Exit(1)
+	}
 }
 
 func run() error {
@@ -22,5 +24,4 @@ func run() error {
 			repo.New(), //   repo
 		),
 	)
-
 }

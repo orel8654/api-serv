@@ -44,3 +44,7 @@ type DataPut struct {
 	CurrencyTo   string  `json:"currency_to"`
 	Well         float64 `json:"well"`
 }
+
+type ExistsRow struct {
+	result bool `db:"exists"`
+}

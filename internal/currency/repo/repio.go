@@ -1,20 +1,32 @@
 package repo
 
-import "context"
+import (
+	"api/internal/config"
+	"context"
+	"fmt"
+
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+)
 
 type Repo struct {
+	storage *sqlx.DB
 }
 
-func New() *Repo {
-	return &Repo{}
+func New(config config.Config) (*Repo, error) {
+	s := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable", config.Username, config.Password, config.Database, config.Host, config.Port)
+	db, err := sqlx.Connect("postgres", s)
+	if err != nil {
+		return nil, err
+	}
+	return &Repo{
+		storage: db,
+	}, nil
 }
 
-func (r *Repo) CurrencyExists(ctx context.Context, from, to string) (ok bool, err error) {
-	const query = `
-select exists (
-	select from currency where currency_from=:from and currency_to = :to
-)
-`
-	// Get Some from query
-	return false, nil
+func (r *Repo) CurrencyExists(ctx context.Context, to string) (ok bool, err error) {
+	query := `select exists(select from newtable where currency_to = :to)`
+	res, err := r.storage.NamedExecContext(ctx, query, to)
+	fmt.Println(res)
+	return true, nil
 }

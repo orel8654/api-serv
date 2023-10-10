@@ -11,6 +11,8 @@ type Tick struct {
 	t *time.Ticker
 }
 
+// TODO: не хватает контекста
+
 func NewTick(tk time.Duration) *Tick {
 	return &Tick{
 		t: time.NewTicker(tk),

@@ -1,0 +1,2 @@
+db:
+  conn: postgresq://rtknm:1234//

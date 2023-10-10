@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"fmt"
+	"net/http"
+	"time"
+
 	"api/currencies"
 	"api/database"
 	"api/ticker"
 	"api/types"
-	"fmt"
-	"net/http"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -80,7 +81,7 @@ func (h *Handler) CreateRow(ctx *fiber.Ctx) error {
 		fmt.Println(err)
 		return fmt.Errorf("row exist")
 	}
-	if err := h.db.WriteRow(payload); err != nil {
+	if err := h.db.WriteRow(ctx.Context(), payload); err != nil {
 		fmt.Println(err)
 		return err
 	}

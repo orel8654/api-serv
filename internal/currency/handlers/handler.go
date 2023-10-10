@@ -3,7 +3,7 @@ package handlers
 import "context"
 
 type Service interface {
-	GetCurrency(ctx context.Context, from, to string) (any, error)
+	GetCurrency(ctx context.Context, to string) (bool, error)
 }
 
 type Handler struct {
@@ -19,6 +19,6 @@ func New(s Service) *Handler {
 // HTTP: GET /api/currency/v1/...
 
 func (h *Handler) GetCurrency() {
-	h.s.GetCurrency(context.Background(), "a", "b")
+	h.s.GetCurrency(context.Background(), "a")
 	//... some logic
 }

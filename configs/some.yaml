@@ -1,2 +1,6 @@
-db:
-  conn: postgresq://rtknm:1234//
+token: "a324cce379414e2e9c81b684950e60da"
+dbhost: "localhost"
+dbport: "5432"
+dbuser: "admin"
+dbpass: "admin"
+dbname: "general"

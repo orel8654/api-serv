@@ -1,9 +1,11 @@
 package main
 
 import (
+	"api/internal/config"
 	"api/internal/currency/handlers"
 	"api/internal/currency/repo"
 	"api/internal/currency/service"
+	"fmt"
 	"os"
 )
 
@@ -16,12 +18,15 @@ func main() {
 
 func run() error {
 	// log
-	// config
-	//
-
-	handler := handlers.New( // delivey
-		service.NewService( //  service
-			repo.New(), //   repo
+	config, err := config.NewConfig("./configs/some.yaml")
+	if err != nil {
+		return err
+	}
+	fmt.Println(config)
+	handler := handlers.New(
+		service.NewService(
+			repo.New(*config),
 		),
 	)
+	return handler.Listen(":3000")
 }

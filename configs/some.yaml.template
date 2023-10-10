@@ -1,2 +1,6 @@
-db:
-  conn:
+token: "token"
+dbhost: "localhost"
+dbport: "5432"
+dbuser: "admin"
+dbpass: "admin"
+dbname: "default"

@@ -5,7 +5,7 @@ import (
 )
 
 type Repo interface {
-	CurrencyExists(ctx context.Context, from, to string) (bool, error)
+	CurrencyExists(ctx context.Context, to string) (bool, error)
 }
 
 type Service struct {
@@ -19,8 +19,7 @@ func NewService(repo Repo) *Service {
 	}
 }
 
-func (s *Service) GetCurrency(ctx context.Context, from, to string) (any, error) {
-	s.repo.CurrencyExists(context.Background(), "a", "b")
-
-	return nil, nil
+func (s *Service) GetCurrency(ctx context.Context, to string) (bool, error) {
+	s.repo.CurrencyExists(context.Background(), to)
+	return false, nil
 }

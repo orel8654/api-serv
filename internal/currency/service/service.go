@@ -4,16 +4,16 @@ import (
 	"context"
 )
 
-type Repo interface {
+type Contract interface {
 	CurrencyExists(ctx context.Context, from, to string) (bool, error)
 }
 
 type Service struct {
-	repo Repo
+	repo Contract
 	//repo *repo.Repo // Конкретная реализация
 }
 
-func NewService(repo Repo) *Service {
+func NewService(repo Contract) *Service {
 	return &Service{
 		repo: repo,
 	}

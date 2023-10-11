@@ -10,7 +10,11 @@ type Handler struct {
 	s Service
 }
 
+// New - Функция принимает контракт
+// этот контракт будет реализовывать какой-нибудь тип
 func New(s Service) *Handler {
+	// Тут можно делать инициализацию fiber
+
 	return &Handler{
 		s: s,
 	}

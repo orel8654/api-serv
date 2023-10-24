@@ -37,8 +37,12 @@ func (s *Storage) WriteRow(ctx context.Context, data types.DataPost) error {
 		Well:         0,
 		UpdatedAt:    time.Now().Format("2006-01-02 15:04:05"),
 	}
-	query := `INSERT INTO newtable (currency_from, currency_to, well, updated_at) 
-        	VALUES(:currency_from, :currency_to, :well, :updated_at)`
+
+	// TODO: стандартизировать работу с SQL текстом.
+	query := `
+INSERT INTO newtable (currency_from, currency_to, well, updated_at) 
+VALUES(:currency_from, :currency_to, :well, :updated_at)
+`
 	_, err := s.s.NamedExecContext(ctx, query, dataWrite)
 	if err != nil {
 		return err
@@ -47,9 +51,11 @@ func (s *Storage) WriteRow(ctx context.Context, data types.DataPost) error {
 }
 
 func (s *Storage) UpdateWell(newData types.DataPut) error {
-	query := `UPDATE newtable
-			set well =$1
-			where currency_to =$2`
+	query := `
+UPDATE newtable
+	set well =$1
+where currency_to =$2
+`
 	_, err := s.s.Exec(query, newData.Well, newData.CurrencyTo)
 	if err != nil {
 		return err
@@ -60,10 +66,12 @@ func (s *Storage) UpdateWell(newData types.DataPut) error {
 // TODO: использование named параметров с запросом и структурой
 
 func (s *Storage) UpdateRows(newData types.CurrencyLatest) error {
-	query := `UPDATE newtable
-			set well = :well,
-			updated_at = :updated_at
-			where currency_to =:currency_to`
+	query := `
+UPDATE newtable
+	SET well = :well,
+		updated_at = :updated_at
+WHERE currency_to =:currency_to
+`
 
 	_, err := s.s.NamedExec(query, newData.Data)
 	return err

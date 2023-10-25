@@ -43,7 +43,7 @@ func run() error {
 
 	// Delivery - слой доставки. Способ обратиться к бизнес логике (или способ обращения к сервису).
 	currencyDelivery := handlers.New(
-		currencyService, // Contract
+		currencyService,
 	)
 
 	return currencyDelivery.Listen("localhost:3000")

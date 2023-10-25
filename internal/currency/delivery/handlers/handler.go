@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"api/internal/types"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 // Currency - Контракт
 type Currency interface {
-	UpdateWell(ctx *fiber.Ctx) error
-	Listen(host string) error
+	UpdateWellRepo(ctx *fiber.Ctx, newData types.DataPut) error
 }
 
 type Handler struct {
@@ -23,13 +24,13 @@ func New(currency Currency) *Handler {
 		app:      fiber.New(),
 	}
 
-	h.app.Put("/api/currency", h.currency.UpdateWell)
+	h.app.Put("/api/currency", h.UpdateWellFiber)
 
 	return h
 }
 
-func (h *Handler) UpdateWell(ctx *fiber.Ctx) error {
-	h.currency.UpdateWell(ctx)
+func (h *Handler) UpdateWellFiber(ctx *fiber.Ctx) error {
+	// h.currency.UpdateWell(ctx)
 	return nil
 }
 

@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"api/internal/types"
+	"context"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 // Currency - Контракт
 type Currency interface {
-	UpdateWellRepo(newData types.DataPut) error
-	SelectRowsRepo() ([]types.DatabaseFields, error)
-	WriteRowRepo(data types.DataPost) error
+	UpdateWellRepo(ctx context.Context, newData types.DataPut) error
+	SelectRowsRepo(ctx context.Context) ([]types.DatabaseFields, error)
+	WriteRowRepo(ctx context.Context, data types.DataPost) error
 }
 
 type Handler struct {
@@ -38,14 +39,14 @@ func (h *Handler) UpdateWellFiber(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&payload); err != nil {
 		return err
 	}
-	if err := h.currency.UpdateWellRepo(payload); err != nil {
+	if err := h.currency.UpdateWellRepo(ctx.Context(), payload); err != nil {
 		return ctx.SendString(err.Error())
 	}
 	return ctx.JSON(payload)
 }
 
 func (h *Handler) GetRows(ctx *fiber.Ctx) error {
-	data, err := h.currency.SelectRowsRepo()
+	data, err := h.currency.SelectRowsRepo(ctx.Context())
 	if err != nil {
 		return ctx.SendString(err.Error())
 	}
@@ -57,7 +58,7 @@ func (h *Handler) CreateRow(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&payload); err != nil {
 		return ctx.SendString(err.Error())
 	}
-	if err := h.currency.WriteRowRepo(payload); err != nil {
+	if err := h.currency.WriteRowRepo(ctx.Context(), payload); err != nil {
 		return ctx.SendString(err.Error())
 	}
 	return ctx.JSON(payload)

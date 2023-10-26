@@ -13,6 +13,8 @@ type Config struct {
 	Host     string `yaml:"dbhost"`
 	Port     string `yaml:"dbport"`
 	Token    string `yaml:"token"`
+	HostApp  string `yaml:"host"`
+	PortApp  string `yaml:"port"`
 }
 
 func NewConfig(path string) (*Config, error) {

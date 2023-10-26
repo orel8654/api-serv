@@ -1,9 +1,8 @@
 package service
 
 import (
-	"context"
-
 	"api/internal/types"
+	"context"
 )
 
 // Repo - Контракт.
@@ -24,24 +23,21 @@ func NewService(repo Repo) *Service {
 	}
 }
 
-func (s *Service) UpdateWellRepo(newData types.DataPut) error {
+func (s *Service) UpdateWellRepo(ctx context.Context, newData types.DataPut) error {
 	// Вот тут может быть проверка: (Эта задача сервиса)
 	// что newData.CurrencyFrom существует
 	// что newData.CurrencyTo существует
 	// что newData.Well > 0
 
 	// s.repo.CurrencyExists(ctx, "a", "b")
-	ctx := context.Background()
 	return s.repo.UpdateWell(ctx, newData)
 }
 
-func (s *Service) WriteRowRepo(data types.DataPost) error {
-	ctx := context.Background()
+func (s *Service) WriteRowRepo(ctx context.Context, data types.DataPost) error {
 	return s.repo.WriteRow(ctx, data)
 }
 
-func (s *Service) SelectRowsRepo() ([]types.DatabaseFields, error) {
-	ctx := context.Background()
+func (s *Service) SelectRowsRepo(ctx context.Context) ([]types.DatabaseFields, error) {
 	q, err := s.repo.SelectAll(ctx)
 	if err != nil {
 		return []types.DatabaseFields{}, err

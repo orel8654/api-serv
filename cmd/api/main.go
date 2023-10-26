@@ -47,5 +47,5 @@ func run() error {
 		currencyService,
 	)
 
-	return currencyDelivery.Listen("localhost:3000")
+	return currencyDelivery.Listen(fmt.Sprintf("%s:%s", conf.HostApp, conf.PortApp))
 }

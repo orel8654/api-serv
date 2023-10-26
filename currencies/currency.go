@@ -1,7 +1,7 @@
 package currencies
 
 import (
-	"api/types"
+	"api/internal/types"
 	"encoding/json"
 	"net/http"
 )

@@ -8,7 +8,9 @@ import (
 
 // Currency - Контракт
 type Currency interface {
-	UpdateWellRepo(ctx *fiber.Ctx, newData types.DataPut) error
+	UpdateWellRepo(newData types.DataPut) error
+	SelectRowsRepo() ([]types.DatabaseFields, error)
+	WriteRowRepo(data types.DataPost) error
 }
 
 type Handler struct {
@@ -24,14 +26,41 @@ func New(currency Currency) *Handler {
 		app:      fiber.New(),
 	}
 
+	h.app.Get("/api/currency", h.GetRows)
+	h.app.Post("/api/currency", h.CreateRow)
 	h.app.Put("/api/currency", h.UpdateWellFiber)
 
 	return h
 }
 
 func (h *Handler) UpdateWellFiber(ctx *fiber.Ctx) error {
-	// h.currency.UpdateWell(ctx)
-	return nil
+	var payload types.DataPut
+	if err := ctx.BodyParser(&payload); err != nil {
+		return err
+	}
+	if err := h.currency.UpdateWellRepo(payload); err != nil {
+		return ctx.SendString(err.Error())
+	}
+	return ctx.JSON(payload)
+}
+
+func (h *Handler) GetRows(ctx *fiber.Ctx) error {
+	data, err := h.currency.SelectRowsRepo()
+	if err != nil {
+		return ctx.SendString(err.Error())
+	}
+	return ctx.JSON(data)
+}
+
+func (h *Handler) CreateRow(ctx *fiber.Ctx) error {
+	var payload types.DataPost
+	if err := ctx.BodyParser(&payload); err != nil {
+		return ctx.SendString(err.Error())
+	}
+	if err := h.currency.WriteRowRepo(payload); err != nil {
+		return ctx.SendString(err.Error())
+	}
+	return ctx.JSON(payload)
 }
 
 func (h *Handler) Listen(host string) error {

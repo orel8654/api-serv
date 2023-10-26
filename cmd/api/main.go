@@ -9,11 +9,12 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
-// TODO: ЗАПУСК нашего приложения
 func main() {
 	if err := run(); err != nil {
+		fmt.Println(err)
 		os.Exit(1)
 	}
 }

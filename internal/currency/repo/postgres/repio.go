@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 
@@ -37,24 +38,24 @@ where currency_to =$2
 	return err
 }
 
-// func (r *Repo) WriteRow(ctx context.Context, data types.DataPost) error {
-// 	dataWrite := types.DatabaseFields{
-// 		CurrencyFrom: data.CurrencyFrom,
-// 		CurrencyTo:   data.CurrencyTo,
-// 		Well:         0,
-// 		UpdatedAt:    time.Now().Format("2006-01-02 15:04:05"),
-// 	}
+func (r *Repo) WriteRow(ctx context.Context, data types.DataPost) error {
+	dataWrite := types.DatabaseFields{
+		CurrencyFrom: data.CurrencyFrom,
+		CurrencyTo:   data.CurrencyTo,
+		Well:         0,
+		UpdatedAt:    time.Now().Format("2006-01-02 15:04:05"),
+	}
 
-// 	query := `
-// INSERT INTO newtable (currency_from, currency_to, well, updated_at)
-// VALUES(:currency_from, :currency_to, :well, :updated_at)
-// `
-// 	_, err := r.db.NamedExecContext(ctx, query, dataWrite)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+	query := `
+INSERT INTO newtable (currency_from, currency_to, well, updated_at)
+VALUES(:currency_from, :currency_to, :well, :updated_at)
+`
+	_, err := r.db.NamedExecContext(ctx, query, dataWrite)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 // func (r *Repo) UpdateRows(ctx context.Context, newData types.CurrencyLatest) error {
 // 	query := `
@@ -89,14 +90,14 @@ where currency_to =$2
 // 	return res, nil
 // }
 
-// func (r *Repo) SelectAll(ctx context.Context) ([]types.DatabaseFields, error) {
-// 	query := `
-// SELECT currency_from, currency_to, well, updated_at
-// FROM newtable
-// `
-// 	var res []types.DatabaseFields
-// 	if err := r.db.SelectContext(ctx, &res, query); err != nil {
-// 		return res, err
-// 	}
-// 	return res, nil
-// }
+func (r *Repo) SelectAll(ctx context.Context) ([]types.DatabaseFields, error) {
+	query := `
+SELECT currency_from, currency_to, well, updated_at
+FROM newtable
+`
+	var res []types.DatabaseFields
+	if err := r.db.SelectContext(ctx, &res, query); err != nil {
+		return res, err
+	}
+	return res, nil
+}
